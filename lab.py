@@ -1,7 +1,7 @@
 """
 Lab 2 template
 """
-
+from collections import deque
 def read_incidence_matrix(filename: str) -> list[list]:
     """
     :param str filename: path to file
@@ -56,7 +56,7 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
 
 def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
-    :param list[list] graph: the adjacency list of a given graph
+    :param list[list] graph: the adjacency dict of a given graph
     :param int start: start vertex of search
     :returns list[int]: the dfs traversal of the graph
     >>> iterative_adjacency_dict_dfs({0: [1, 2], 1: [0, 2], 2: [0, 1]}, 0)
@@ -64,8 +64,20 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     >>> iterative_adjacency_dict_dfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
     [0, 1, 2, 3]
     """
-    pass
-
+    def dive_dfs(graph: dict[int, list[int]], stack = None, visited = None):
+        if not stack:
+            stack = [start]
+        if not visited:
+            visited = set()
+        while stack:
+            vert = stack.pop(0)
+            if vert not in visited:
+                visited.add(vert)
+                stack+=graph[vert]
+        return list(visited)
+    
+    res = dive_dfs(graph)
+    return res
 
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
     """
@@ -103,7 +115,16 @@ def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) ->list[in
     >>> recursive_adjacency_matrix_dfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
     [0, 1, 2, 3]
     """
-    pass
+    def dive_dfs(graph: list[list[int]], node: int, visited = None):
+        if not visited:
+            visited = set()
+        visited.add(node)
+        for index, vert in enumerate(graph[node]):
+            if vert == 1 and (index not in visited):
+                dive_dfs(graph, index, visited)
+        return list(visited)
+    res = dive_dfs(graph, start)
+    return res
 
 
 def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> list[int]:
@@ -129,7 +150,16 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
     >>> iterative_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
     [0, 1, 2, 3]
     """
-    pass
+    quee = deque()
+    quee.append(start)
+    visited = {start}
+    while quee:
+        vert = quee.popleft()
+        for ind, el in enumerate(graph[vert]):
+            if el == 1 and ind not in visited:
+                visited.add(ind)
+                quee.append(ind)
+    return list(visited)
 
 
 def recursive_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> list[int]:
@@ -179,9 +209,7 @@ def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
     >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1], 3: [1]})
     2
     """
-    pass
 
-
-# if __name__ == "__main__":
-#     import doctest
-#     doctest.testmod()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
