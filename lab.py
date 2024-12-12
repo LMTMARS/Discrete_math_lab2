@@ -54,8 +54,6 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
                 final[line[0]].append(line[1])
     return final
 
-print(read_adjacency_dict('input.dot'))
-
 def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
     :param list[list] graph: the adjacency list of a given graph
