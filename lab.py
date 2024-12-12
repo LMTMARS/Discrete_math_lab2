@@ -7,24 +7,54 @@ def read_incidence_matrix(filename: str) -> list[list]:
     :param str filename: path to file
     :returns list[list]: the incidence matrix of a given graph
     """
-    pass
+    edges_vert = {}
+    vertices = set()
 
+    with open(filename, mode = 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+        for line in lines[1:-1]:
+            line = line.strip().replace(' ','').replace(';','').split('->')
+            edges_vert[tuple(line)] = line
+            vertices.update(line)
+    
+    vertices = sorted(vertices)
+    edges_vert = dict(sorted(edges_vert.items(), key=lambda x: x[0]))
+    incid_matrx = [[1 if vert in edge else 0 for edge in edges_vert] for vert in vertices]
+    return incid_matrx
 
 def read_adjacency_matrix(filename: str) -> list[list]:
     """
     :param str filename: path to file
     :returns list[list]: the adjacency matrix of a given graph
     """
-    pass
-
+    vertices = set()
+    edges = set()
+    with open(filename, mode = 'r', encoding='utf-8') as file:
+        lines = file.readlines()[1:-1]
+        for line in lines:
+            line = line.strip().replace(' ','').replace(';','').split('->')
+            edges.add(tuple(line))
+            vertices.update(line)
+    adj_matrx = [[1 if (vert, vert_pin) in edges else 0 for vert in vertices] for vert_pin in vertices]
+    return adj_matrx
 
 def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
     """
     :param str filename: path to file
     :returns dict: the adjacency dict of a given graph
     """
-    pass
+    final = {}
+    with open(filename, mode = 'r', encoding='utf-8') as file:
+        lines = file.readlines()[1:-1]
+        for line in lines:
+            line = line.strip().replace(' ','').replace(';','').split('->')
+            if line[0] not in final:
+                final[line[0]] = [line[1]]
+            else:
+                final[line[0]].append(line[1])
+    return final
 
+print(read_adjacency_dict('input.dot'))
 
 def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
@@ -154,6 +184,6 @@ def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
     pass
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.testmod()
