@@ -1,0 +1,16 @@
+iterative_adjacency_matrix_dfs: ['6.6000', '42.0000']
+
+recursive_adjacency_matrix_dfs: ['5.2000', '26.4000']
+
+iterative_adjacency_matrix_bfs: ['4.9000', '19.6000']
+
+adjacency_matrix_radius: ['8.4000', '471.0000']
+
+iterative_adjacency_dict_dfs: ['4.2000', '5.1000']
+
+recursive_adjacency_dict_dfs: ['3.8000', '21.5000']
+
+iterative_adjacency_dict_bfs: ['3.8000', '6.2000']
+
+adjacency_dict_radius: ['10.3000', '176.3000']
+
