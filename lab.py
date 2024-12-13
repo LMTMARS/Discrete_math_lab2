@@ -79,6 +79,7 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     res = dive_dfs(graph)
     return res
 
+
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -89,10 +90,23 @@ def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
     >>> iterative_adjacency_matrix_dfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
     [0, 1, 2, 3]
     """
-    pass
+    visited = [start]
+    stack = [start]
 
+    while stack:
+        found = False
+        for ref, val in enumerate(graph[stack[-1]]):
+            if val == 1 and ref not in stack + visited:
+                visited.append(ref)
+                stack.append(ref)
+                found = True
+                break
+        if not found:
+            stack.pop(-1)
+    return visited
 
-def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
+def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int, \
+                                 visited=None, stack=None) -> list[int]:
     """
     :param list[list] graph: the adjacency list of a given graph
     :param int start: start vertex of search
@@ -102,8 +116,23 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     >>> recursive_adjacency_dict_dfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
     [0, 1, 2, 3]
     """
-    pass
+    visited = [start] if visited is None else visited
+    stack = [start] if stack is None else stack
 
+    found = False
+    for val in graph[stack[-1]]:
+        if val not in stack + visited:
+            visited.append(val)
+            stack.append(val)
+            found = True
+            break
+    if not found:
+        stack.pop(-1)
+    
+    if stack:
+        recursive_adjacency_dict_dfs(graph, stack[-1], visited, stack)
+
+    return visited
 
 def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) ->list[int]:
     """
