@@ -2,6 +2,7 @@
 Lab 2 template
 """
 from collections import deque
+
 def read_incidence_matrix(filename: str) -> list[list]:
     """
     :param str filename: path to file
