@@ -2,6 +2,8 @@
 Lab 2 template
 """
 from collections import deque
+import time
+import matplotlib.pyplot as plt
 
 def read_incidence_matrix(filename: str) -> list[list]:
     """
@@ -48,7 +50,7 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
     with open(filename, mode = 'r', encoding='utf-8') as file:
         lines = file.readlines()[1:-1]
         for line in lines:
-            line = line.strip().replace(' ','').replace(';','').split('->')
+            line = list(map(int, line.strip().replace(' ','').replace(';','').split('->')))
             if line[0] not in final:
                 final[line[0]] = [line[1]]
             else:
@@ -80,7 +82,6 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     res = dive_dfs(graph)
     return res
 
-
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -105,6 +106,7 @@ def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
         if not found:
             stack.pop(-1)
     return visited
+
 
 def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int, \
                                  visited=None, stack=None) -> list[int]:
@@ -203,7 +205,10 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
 
 def custom_matrix_dfs(graph: list[list], start:int):
     """
-    bfs that looks for biggest way
+    dfs that looks for the longest path
+    param: graph - graph's adjacency matrix
+           start - initial vertex
+    return: int - length of the longest path.
     """
     n = len(graph)
     distance = [-1] * n
@@ -220,9 +225,12 @@ def custom_matrix_dfs(graph: list[list], start:int):
 
     return max(distance)
 
-def custom_dict_dfs(graph: list[list], start:int):
+def custom_dict_dfs(graph: dict[list[int]], start:int):
     """
-    bfs that looks for biggest way
+    dfs that looks for the longest path
+    param: graph - graph's adjacency dictionary
+           start - initial vertex
+    return: int - length of the longest path.
     """
     visited = {v: False for v in graph}
     distance = {v: float('inf') for v in graph}
@@ -267,6 +275,110 @@ def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
         radius.append(custom_dict_dfs(graph, ver))
     return min(radius)
 
+def comparative_analysis(filename: str) -> float:
+    """
+    This function calculates time complexety for each function-
+    algorithm in laboratory work.
+    -----------------------------------------------------------
+    param: filename - path to a file to write algorithms'
+    time complexities.
+    return: dict[list[float]] - algorithms' time complexeties,
+    where keys - algorithms names, values - time complexety on
+    different data.
+    """
+    def record_time(algorithm, graph, start):
+        """
+        This function calculates time complexity for
+        and algorithm represented in a form of lambda-func.
+        ---------------------------------------------------
+        param: algorithm - lambda function of the algorithm
+               graph - data in adjacency matrix or dict form.
+               start - number of intial vertex or 'None'
+        return: float - time complexity of an algorithm
+        on a particular data
+        """
+        start_time = time.perf_counter()
+        res = algorithm(graph, start)
+        end_time = time.perf_counter()
+        return format((end_time - start_time) * (10 ** 6), '.4f')
+
+    all_algo_matr = [
+        ('iterative_adjacency_matrix_dfs', lambda graph, start : iterative_adjacency_matrix_dfs(graph, start)),
+        ('recursive_adjacency_matrix_dfs', lambda graph, start : recursive_adjacency_matrix_dfs(graph, start)),
+        ('iterative_adjacency_matrix_bfs', lambda graph, start : iterative_adjacency_matrix_bfs(graph, start)),
+        ('adjacency_matrix_radius', lambda graph, start: adjacency_matrix_radius(graph))]
+
+    all_algo_dict = [
+        ('iterative_adjacency_dict_dfs', lambda graph, start : iterative_adjacency_dict_dfs(graph, start)),
+        ('recursive_adjacency_dict_dfs', lambda graph, start : recursive_adjacency_dict_dfs(graph, start)),
+        ('iterative_adjacency_dict_bfs', lambda graph, start : iterative_adjacency_dict_bfs(graph, start)),
+        ('adjacency_dict_radius', lambda graph, start: adjacency_dict_radius(graph))]
+
+    filenames = ['input.dot', 'input2.dot']
+
+    all_adj_matrix = [read_adjacency_matrix(filename) for filename in filenames]
+    all_adj_dict = [read_adjacency_dict(filename) for filename in filenames]
+
+    results = {algo[0]: [] for algo in all_algo_matr + all_algo_dict}
+
+    for algo in all_algo_matr:
+        if 'radius' in algo[0]:
+            for file in all_adj_matrix:
+                res = record_time(algo[1], file, 'None')
+                results[algo[0]].append(res)
+        else:
+            for file in all_adj_matrix:
+                res = record_time(algo[1], file, 0)
+                results[algo[0]].append(res)
+
+    for algo in all_algo_dict:
+        if 'radius' in algo[0]:
+            for index, file in enumerate(all_adj_dict):
+                res = record_time(algo[1], file, 'None')
+                results[algo[0]].append(res)
+        else:
+            for index, file in enumerate(all_adj_dict):
+                res = record_time(algo[1], file, 0)
+                results[algo[0]].append(res)
+
+    with open(filename, mode='w', encoding='utf-8') as file:
+        for key in results:
+            file.write(f'{key}: {results[key]}\n\n')
+    return results
+
+def visulize_results(results: dict):
+    """
+    This function takes time complexeties
+    of algorithms and depicts them on
+    diagram.
+    ------------------------------------
+    param: results - time complexeties of
+    algorithms.
+    return: None
+    """
+    datasets = ['3V graph', '25V graph']
+    fig, axes = plt.subplots(1, len(datasets), figsize=(15, 5))
+    
+    if len(datasets) == 1:
+        axes = [axes]
+    colors = ['skyblue', 'lightgreen', 'salmon', 'orange', 'purple', 'pink', 'lightcoral', 'gold']
+    
+    for i, dataset in enumerate(datasets):
+        ax = axes[i]
+        times = [float(result[i]) for result in results.values()]
+        algorithms = list(results.keys())
+
+        if len(algorithms) > len(colors):
+            colors = colors * ((len(algorithms) // len(colors)) + 1)
+
+        ax.barh(algorithms, times, color=colors[:len(algorithms)])
+        
+        ax.set_title(f'Час для {dataset}')
+        ax.set_xlabel('Час (мікросек.)')
+        ax.set_xlim(0, max(times) * 1.1)
+    
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     import doctest
