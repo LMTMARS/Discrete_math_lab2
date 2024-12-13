@@ -1,42 +1,6 @@
 """
 Lab 2 template
 """
-
-# def read_incidence_matrix(filename: str) -> list[list]:
-#     """
-#     :param str filename: path to file
-#     :returns list[list]: the incidence matrix of a given graph
-#     """
-#     pass
-
-
-# def read_adjacency_matrix(filename: str) -> list[list]:
-#     """
-#     :param str filename: path to file
-#     :returns list[list]: the adjacency matrix of a given graph
-#     """
-#     pass
-
-
-# def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
-#     """
-#     :param str filename: path to file
-#     :returns dict: the adjacency dict of a given graph
-#     """
-#     pass
-
-# def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
-#     """
-#     :param list[list] graph: the adjacency list of a given graph
-#     :param int start: start vertex of search
-#     :returns list[int]: the dfs traversal of the graph
-#     >>> iterative_adjacency_dict_dfs({0: [1, 2], 1: [0, 2], 2: [0, 1]}, 0)
-#     [0, 1, 2]
-#     >>> iterative_adjacency_dict_dfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
-#     [0, 1, 2, 3]
-#     """
-#     pass
-
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -91,18 +55,6 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int, \
 
     return visited
 
-# def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) ->list[int]:
-#     """
-#     :param dict graph: the adjacency matrix of a given graph
-#     :param int start: start vertex of search
-#     :returns list[int]: the dfs traversal of the graph
-#     >>> recursive_adjacency_matrix_dfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0)
-#     [0, 1, 2]
-#     >>> recursive_adjacency_matrix_dfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
-#     [0, 1, 2, 3]
-#     """
-#     pass
-
 
 def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
@@ -126,51 +78,12 @@ def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> lis
         queue.pop(0)
     return result
 
-
-# def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[int]:
-#     """
-#     :param dict graph: the adjacency matrix of a given graph
-#     :param int start: start vertex of search
-#     :returns list[int]: the bfs traversal of the graph
-#     >>> iterative_adjacency_matrix_bfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0)
-#     [0, 1, 2]
-#     >>> iterative_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
-#     [0, 1, 2, 3]
-#     """
-#     pass
-
-
-# def recursive_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> list[int]:
-#     """
-#     :param list[list] graph: the adjacency list of a given graph
-#     :param int start: start vertex of search
-#     :returns list[int]: the bfs traversal of the graph
-#     >>> recursive_adjacency_dict_bfs({0: [1, 2], 1: [0, 2], 2: [0, 1]}, 0)
-#     [0, 1, 2]
-#     >>> recursive_adjacency_dict_bfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
-#     [0, 1, 2, 3]
-#     """
-#     pass
-
-
-# def recursive_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[int]:
-#     """
-#     :param dict graph: the adjacency matrix of a given graph
-#     :param int start: start vertex of search
-#     :returns list[int]: the bfs traversal of the graph
-#     >>> recursive_adjacency_matrix_bfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0)
-#     [0, 1, 2]
-#     >>> recursive_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
-#     [0, 1, 2, 3]
-#     """
-#     pass
-
 def custom_matrix_dfs(graph: list[list], start:int):
     """
     bfs that looks for biggest way
     """
     n = len(graph)
-    distance = [-1] * n
+    distance = [float("inf")] * n
     queue = [start]
     distance[start] = 0
 
@@ -178,7 +91,7 @@ def custom_matrix_dfs(graph: list[list], start:int):
         node = queue.pop(0)
 
         for neighbor in range(n):
-            if graph[node][neighbor] == 1 and distance[neighbor] == -1:
+            if graph[node][neighbor] == 1 and distance[neighbor] == float('inf'):
                 distance[neighbor] = distance[node] + 1
                 queue.append(neighbor)
 
